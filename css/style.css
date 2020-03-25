@@ -1,0 +1,13 @@
+html, body, .container {
+    height: 100%;
+    font-size: 12px;
+}
+
+canvas {
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+label {
+    margin: 0;
+}

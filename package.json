@@ -1,0 +1,23 @@
+{
+  "name": "automaty-komorkowe",
+  "version": "1.0.0",
+  "description": "A cellular automata project created for my studies.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/piotrkucia95/automaty-komorkowe.git"
+  },
+  "author": "Piotr Kucia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/piotrkucia95/automaty-komorkowe/issues"
+  },
+  "homepage": "https://github.com/piotrkucia95/automaty-komorkowe#readme",
+  "dependencies": {
+    "electron": "^8.2.0"
+  }
+}
