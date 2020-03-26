@@ -17,22 +17,87 @@
 
             <div class="col canvas-column">
                 <div class="canvas-container w-100 p-4">
-                    <canvas id="main-canvas" width="100" height="100"></canvas>
+                    <canvas id="main-canvas" width="403" height="201"></canvas>
                 </div>
             </div>
 
             <div class="col">
-                <div class="inputs-container p-1">
-                    <div class="form-group w-100 text-right">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="zad1-tab" data-toggle="tab" href="#zad1" role="tab" aria-controls="zad1" aria-selected="true">Zadanie 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="zad2-tab" data-toggle="tab" href="#zad2" role="tab" aria-controls="zad2" aria-selected="false">Zadanie 2</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="zad1" role="tabpanel" aria-labelledby="zad1-tab"> 
+
+                        <div class="inputs-container p-1">
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="radio" name="rule-radio" id="rule30" value="rule30">
+                                <label class="form-check-label" for="rule30">
+                                    Reguła 30
+                                </label>
+                            </div>
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="radio" name="rule-radio" id="rule90" value="rule90">
+                                <label class="form-check-label" for="rule90">
+                                    Reguła 90
+                                </label>
+                            </div>
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="radio" name="rule-radio" id="rule110" value="rule110">
+                                <label class="form-check-label" for="rule110">
+                                    Reguła 110
+                                </label>
+                            </div>
+                        </div>
+                        <div id="error-message1" class="text-danger pt-2 d-none">Wybierz regułę.</div>
+                        <div class="pt-3 text-center">   
+                            <button onclick="start1()">START</button>
+                            <button onclick="clearCanvas()">WYCZYŚĆ</button>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="zad2" role="tabpanel" aria-labelledby="zad2-tab"> 
+
+                        <div class="inputs-container p-1">
+                            <div class="pt-3">
+                                Ilość komórek w stanie 1:
+                            </div>
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="radio" name="fill-radio" id="percent25" value="25">
+                                <label class="form-check-label" for="rule30">
+                                    25%
+                                </label>
+                            </div>
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="radio" name="fill-radio" id="percent50" value="50">
+                                <label class="form-check-label" for="rule90">
+                                    50%
+                                </label>
+                            </div>
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="radio" name="fill-radio" id="percent75" value="75">
+                                <label class="form-check-label" for="rule110">
+                                    75%
+                                </label>
+                            </div>
+                        </div>
+                        <div id="error-message2" class="text-danger pt-2 d-none">Wybierz zawartość komórek w stanie 1.</div>
+                        <div class="pt-3 text-center">   
+                            <button onclick="start2()">START</button>
+                            <button onclick="clearCanvas()">WYCZYŚĆ</button>
+                        </div>
                         
                     </div>
                 </div>
-                <button id="start-button">START</button>
             </div>
 
         </div>
     </div>
     <script src="../scripts/main.js"></script>
-    <script src="../scripts/canvasController.js"></script>  
 </body>
 </html>
