@@ -12,7 +12,7 @@
     <script>if (window.module) module = window.module;</script>
 </head>
 <body>
-    <div class="container w-100">
+    <div class="w-100 pl-3 pr-3">
         <div class="row">
 
             <div class="col canvas-column">
@@ -24,10 +24,16 @@
             <div class="col">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" id="zad1-tab" data-toggle="tab" href="#zad1" role="tab" aria-controls="zad1" aria-selected="true">Zadanie 1</a>
+                        <a class="nav-link active" id="zad1-tab" data-toggle="tab" href="#zad1" role="tab" aria-controls="zad1" aria-selected="true">Zad. 1</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="zad2-tab" data-toggle="tab" href="#zad2" role="tab" aria-controls="zad2" aria-selected="false">Zadanie 2</a>
+                        <a class="nav-link" id="zad2-tab" data-toggle="tab" href="#zad2" role="tab" aria-controls="zad2" aria-selected="false">Zad. 2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="zad3-tab" data-toggle="tab" href="#zad3" role="tab" aria-controls="zad3" aria-selected="false">Zad. 3</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="zad4-tab" data-toggle="tab" href="#zad4" role="tab" aria-controls="zad4" aria-selected="false">Zad. 4</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -35,25 +41,31 @@
 
                         <div class="inputs-container p-1">
                             <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio" id="rule30" value="rule30">
-                                <label class="form-check-label" for="rule30">
+                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule30-sync" value="rule30">
+                                <label class="form-check-label" for="rule30-sync">
                                     Reguła 30
                                 </label>
                             </div>
                             <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio" id="rule90" value="rule90">
+                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule90-sync" value="rule90">
                                 <label class="form-check-label" for="rule90">
                                     Reguła 90
                                 </label>
                             </div>
                             <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio" id="rule110" value="rule110">
-                                <label class="form-check-label" for="rule110">
+                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule110-sync" value="rule110">
+                                <label class="form-check-label" for="rule110-sync">
                                     Reguła 110
                                 </label>
                             </div>
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule184-sync" value="rule184">
+                                <label class="form-check-label" for="rule184-sync">
+                                    Reguła 184
+                                </label>
+                            </div>
                         </div>
-                        <div id="error-message1" class="text-danger pt-2 d-none">Wybierz regułę.</div>
+                        <div id="error-message-sync" class="text-danger pt-2 d-none">Wybierz regułę.</div>
                         <div class="pt-3 text-center">   
                             <button onclick="start1()">START</button>
                             <button onclick="clearCanvas()">WYCZYŚĆ</button>
@@ -62,36 +74,43 @@
                     </div>
 
                     <div class="tab-pane fade" id="zad2" role="tabpanel" aria-labelledby="zad2-tab"> 
-
                         <div class="inputs-container p-1">
-                            <div class="pt-3">
-                                Ilość komórek w stanie 1:
-                            </div>
                             <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="fill-radio" id="percent25" value="25">
-                                <label class="form-check-label" for="rule30">
-                                    25%
+                                <input class="form-check-input" type="radio" name="rule-radio-async" id="rule30-async" value="rule30">
+                                <label class="form-check-label" for="rule30-async">
+                                    Reguła 30
                                 </label>
                             </div>
                             <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="fill-radio" id="percent50" value="50">
-                                <label class="form-check-label" for="rule90">
-                                    50%
+                                <input class="form-check-input" type="radio" name="rule-radio-async" id="rule90-async" value="rule90">
+                                <label class="form-check-label" for="rule90-async">
+                                    Reguła 90
                                 </label>
                             </div>
-                            <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="fill-radio" id="percent75" value="75">
-                                <label class="form-check-label" for="rule110">
-                                    75%
-                                </label>
+                            <div id="error-message-async" class="text-danger pt-2 d-none">Wybierz regułę.</div>
+                            <div class="pt-3 text-center">   
+                                <button onclick="start2()">START</button>
+                                <button onclick="clearCanvas()">WYCZYŚĆ</button>
                             </div>
                         </div>
-                        <div id="error-message2" class="text-danger pt-2 d-none">Wybierz zawartość komórek w stanie 1.</div>
-                        <div class="pt-3 text-center">   
-                            <button onclick="start2()">START</button>
-                            <button onclick="clearCanvas()">WYCZYŚĆ</button>
+                    </div>
+                    <div class="tab-pane fade" id="zad3" role="tabpanel" aria-labelledby="zad3-tab"> 
+                        <div class="inputs-container p-1">
+                            <div class="form-check pt-3">Symulacja z regułą 90.</div>
+                            <div class="pt-3 text-center">   
+                                <button onclick="start3()">START</button>
+                                <button onclick="clearCanvas()">WYCZYŚĆ</button>
+                            </div>
                         </div>
-                        
+                    </div>
+                    <div class="tab-pane fade" id="zad4" role="tabpanel" aria-labelledby="zad4-tab"> 
+                        <div class="inputs-container p-1">
+                            <div class="form-check pt-3">Symulacja z regułą 90.</div>
+                            <div class="pt-3 text-center">   
+                                <button onclick="start4()">START</button>
+                                <button onclick="clearCanvas()">WYCZYŚĆ</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

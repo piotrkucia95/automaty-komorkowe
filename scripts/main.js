@@ -11,10 +11,16 @@ var width   = canvas.width;
 var height  = canvas.height;
 var context = canvas.getContext("2d");
 
-var wolframArray = ["111", "110", "101", "100", "011", "010", "001", "000"];
+const wolframArray = ["111", "110", "101", "100", "011", "010", "001", "000"];
+var indexList;
 
 var line = new Array(width);
-line[Math.floor(width/2)] = 1;
+for (let i = 0; i < width; i++) {
+    line[i] = {
+        oldState: i == Math.floor(width/2) ? 1 : 0,
+        state:    i == Math.floor(width/2) ? 1 : 0,
+    }
+}
 
 var rule = function (ruleBinary, left, center, right) {
     var states = left + '' + center + '' + right + '';
@@ -22,38 +28,69 @@ var rule = function (ruleBinary, left, center, right) {
     return parseInt(ruleBinary.charAt(index));
 }
 
-var next = function (ruleBinary, line){
-    var next = new Array(width);
-    for(var x = 0; x < width; x++){
-        var top   = line[x    ] ? 1 : 0;
-        var right = line[x + 1] ? 1 : 0;
-        var left  = line[x - 1] ? 1 : 0;
-
-        next[x] = rule(ruleBinary, left, top, right);
+var nextSync = function (ruleBinary) {
+    for(var x = 0; x < width; x++) {
+        var top   = line[x    ].oldState ? 1 : 0;
+        var right = line[x + 1] && line[x + 1].oldState ? 1 : 0;
+        var left  = line[x - 1] && line[x - 1].oldState ? 1 : 0;
+        line[x].state = rule(ruleBinary, left, top, right);
     }
-    return next;
+    for(var x = 0; x < width; x++) {
+        line[x].oldState = line[x].state;
+    }
+}
+
+var nextAsync1 = function (ruleBinary) {
+    for(var x = 0; x < width; x++) {
+        var top   = line[x    ].state ? 1 : 0;
+        var right = line[x + 1] && line[x + 1].state ? 1 : 0;
+        var left  = line[x - 1] && line[x - 1].state ? 1 : 0;
+        line[x].state = rule(ruleBinary, left, top, right);
+    }
+}
+
+var nextAsync2 = function (ruleBinary) {
+    if (!indexList) indexList = createIndexList();
+    for(var x = 0; x < width; x++) {
+        var top   = line[indexList[x]].state ? 1 : 0;
+        var right = line[indexList[x] + 1] && line[indexList[x] + 1].state ? 1 : 0;
+        var left  = line[indexList[x] - 1] && line[indexList[x] - 1].state ? 1 : 0;
+        line[indexList[x]].state = rule(ruleBinary, left, top, right);
+    }
+}
+
+var nextAsync3 = function (ruleBinary) {
+    indexList = createIndexList();
+    for(var x = 0; x < width; x++) {
+        var top   = line[indexList[x]].state ? 1 : 0;
+        var right = line[indexList[x] + 1] && line[indexList[x] + 1].state ? 1 : 0;
+        var left  = line[indexList[x] - 1] && line[indexList[x] - 1].state ? 1 : 0;
+        line[indexList[x]].state = rule(ruleBinary, left, top, right);
+    }
 }
 
 var drawLine = function (line, y){
     for(var x = 0; x < width; x++){
-        context.fillStyle = line[x] ? COLOR_BLACK : COLOR_WHITE;
+        context.fillStyle = line[x].state ? COLOR_BLACK : COLOR_WHITE;
         context.fillRect(x * size, y * size, size, size);
     }
 }
 
-var frame = function (ruleBinary, y) {
-    line = next(ruleBinary, line);
+var frame = function (next, ruleBinary, y) {
+    next(ruleBinary);
     drawLine(line, y);
     if  (y < height - 1) {
-        window.requestAnimationFrame(function() { frame(ruleBinary, y + 1 ) });
+        window.requestAnimationFrame(() => { 
+            frame(next, ruleBinary, y + 1 ) 
+        });
     }
 }
 
 var start1 = function () {
     drawLine(line, 0);
     var ruleBinary;
-    $('#error-message1').addClass('d-none');
-    var rule = $("input[name='rule-radio']:checked").val();
+    $('#error-message-sync').addClass('d-none');
+    var rule = $("input[name='rule-radio-sync']:checked").val();
     switch (rule) {
         case "rule30":
             ruleBinary = "00011110";
@@ -64,54 +101,74 @@ var start1 = function () {
         case "rule110":
             ruleBinary = "01101110";
             break;
+        case "rule184":
+            ruleBinary = "10111000";
+            break;
         default:
-            $('#error-message1').removeClass('d-none');
+            $('#error-message-sync').removeClass('d-none');
             return
     }
 
-    window.requestAnimationFrame(function() { 
-        frame(ruleBinary, 1);
+    window.requestAnimationFrame(() => { 
+        frame(nextSync, ruleBinary, 1);
     });
 }
 
-var randomFill = function (percent) {
-    var newLine = new Array(width);
-    var coloredCells = Math.floor(width * percent / 100);
-    for (var i = 0; i < coloredCells; i++) {
-        var index = Math.floor(Math.random() * width);
-        if (newLine[index]) {
-            i--;
-            continue;
-        }
-        newLine[index] = 1;
+var start2 = function () {
+    drawLine(line, 0);
+    var ruleBinary;
+    $('#error-message-sync').addClass('d-none');
+    var rule = $("input[name='rule-radio-async']:checked").val();
+    switch (rule) {
+        case "rule30":
+            ruleBinary = "00011110";
+            break;
+        case "rule90":
+            ruleBinary = "01011010";
+            break;
+        default:
+            $('#error-message-async').removeClass('d-none');
+            return
     }
-    return newLine;
+
+    window.requestAnimationFrame(() => { 
+        frame(nextAsync1, ruleBinary, 1);
+    });
+}
+
+var start3 = function () {
+    drawLine(line, 0);
+    window.requestAnimationFrame(() => { 
+        frame(nextAsync2, "01011010", 1);
+    });
+}
+
+var start4 = function () {
+    drawLine(line, 0);
+    window.requestAnimationFrame(() => { 
+        frame(nextAsync3, "01011010", 1);
+    });
 }
 
 var clearCanvas = function () {
     context.clearRect(0, 0, width, height);
-    line = new Array(width);
-    line[Math.floor(width/2)] = 1;
-    $("input:radio[name='fill-radio']").each(function(i) {
-        this.checked = false;
- });
-}
-
-var start2 = function () {
-    var percentFill = $("input[name='fill-radio']:checked").val();
-    if (!percentFill) {
-        $('#error-message2').removeClass('d-none');
-        return;
-    } else {
-        $('#error-message2').addClass('d-none');
+    for (let i = 0; i < width; i++) {
+        line[i] = {
+            oldState: i == Math.floor(width/2) ? 1 : 0,
+            state:    i == Math.floor(width/2) ? 1 : 0,
+        }
     }
-    drawLine(line, 0);
-    window.requestAnimationFrame(function() { 
-        frame("10111000", 1);
-    });
 }
 
-$('input[type=radio][name=fill-radio]').change(function() {
-    var percentFill = $("input[name='fill-radio']:checked").val();
-    line = randomFill(+percentFill);
-});
+var createIndexList = function() {
+    var newIndexList = new Array(width);
+    for (let i = 0; i < width; i++) {
+        let index = Math.floor(Math.random() * width);
+        if (!newIndexList.includes(index)) {
+            newIndexList[i] = index;
+        } else {
+            i--;
+        }
+    }
+    return newIndexList;
+}
