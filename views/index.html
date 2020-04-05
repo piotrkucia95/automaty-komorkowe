@@ -17,105 +17,34 @@
 
             <div class="col canvas-column">
                 <div class="canvas-container w-100 p-4">
-                    <canvas id="main-canvas" width="403" height="201"></canvas>
+                    <canvas id="main-canvas" width="401" height="401"></canvas>
                 </div>
             </div>
 
             <div class="col">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="zad1-tab" data-toggle="tab" href="#zad1" role="tab" aria-controls="zad1" aria-selected="true">Zad. 1</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="zad2-tab" data-toggle="tab" href="#zad2" role="tab" aria-controls="zad2" aria-selected="false">Zad. 2</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="zad3-tab" data-toggle="tab" href="#zad3" role="tab" aria-controls="zad3" aria-selected="false">Zad. 3</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="zad4-tab" data-toggle="tab" href="#zad4" role="tab" aria-controls="zad4" aria-selected="false">Zad. 4</a>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="zad1" role="tabpanel" aria-labelledby="zad1-tab"> 
-
-                        <div class="inputs-container p-1">
-                            <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule30-sync" value="rule30">
-                                <label class="form-check-label" for="rule30-sync">
-                                    Reguła 30
-                                </label>
-                            </div>
-                            <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule90-sync" value="rule90">
-                                <label class="form-check-label" for="rule90">
-                                    Reguła 90
-                                </label>
-                            </div>
-                            <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule110-sync" value="rule110">
-                                <label class="form-check-label" for="rule110-sync">
-                                    Reguła 110
-                                </label>
-                            </div>
-                            <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio-sync" id="rule184-sync" value="rule184">
-                                <label class="form-check-label" for="rule184-sync">
-                                    Reguła 184
-                                </label>
-                            </div>
-                        </div>
-                        <div id="error-message-sync" class="text-danger pt-2 d-none">Wybierz regułę.</div>
-                        <div class="pt-3 text-center">   
-                            <button onclick="start1()">START</button>
-                            <button onclick="clearCanvas()">WYCZYŚĆ</button>
-                        </div>
-
+                <div class="inputs-container p-3">
+                    Typ sąsiedztwa:
+                    <div class="form-check pt-3">
+                        <input class="form-check-input" type="radio" name="neighbourhood" id="moore" value="moore">
+                        <label class="form-check-label" for="moore">
+                            Moore'a
+                        </label>
                     </div>
-
-                    <div class="tab-pane fade" id="zad2" role="tabpanel" aria-labelledby="zad2-tab"> 
-                        <div class="inputs-container p-1">
-                            <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio-async" id="rule30-async" value="rule30">
-                                <label class="form-check-label" for="rule30-async">
-                                    Reguła 30
-                                </label>
-                            </div>
-                            <div class="form-check pt-3">
-                                <input class="form-check-input" type="radio" name="rule-radio-async" id="rule90-async" value="rule90">
-                                <label class="form-check-label" for="rule90-async">
-                                    Reguła 90
-                                </label>
-                            </div>
-                            <div id="error-message-async" class="text-danger pt-2 d-none">Wybierz regułę.</div>
-                            <div class="pt-3 text-center">   
-                                <button onclick="start2()">START</button>
-                                <button onclick="clearCanvas()">WYCZYŚĆ</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="zad3" role="tabpanel" aria-labelledby="zad3-tab"> 
-                        <div class="inputs-container p-1">
-                            <div class="form-check pt-3">Symulacja z regułą 90.</div>
-                            <div class="pt-3 text-center">   
-                                <button onclick="start3()">START</button>
-                                <button onclick="clearCanvas()">WYCZYŚĆ</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="zad4" role="tabpanel" aria-labelledby="zad4-tab"> 
-                        <div class="inputs-container p-1">
-                            <div class="form-check pt-3">Symulacja z regułą 90.</div>
-                            <div class="pt-3 text-center">   
-                                <button onclick="start4()">START</button>
-                                <button onclick="clearCanvas()">WYCZYŚĆ</button>
-                            </div>
-                        </div>
+                    <div class="form-check pt-3">
+                        <input class="form-check-input" type="radio" name="neighbourhood" id="neumann" value="neumann">
+                        <label class="form-check-label" for="neumann">
+                            Von Neumanna
+                        </label>
                     </div>
                 </div>
+                <div id="error-message" class="text-danger pt-2 d-none">Wybierz typ sąsiedztwa.</div>
+                <div class="pt-3 text-center">   
+                    <button onclick="start()">START</button>
+                    <button onclick="clearCanvas()">WYCZYŚĆ</button>
+                </div>
             </div>
-
         </div>
+
     </div>
     <script src="../scripts/main.js"></script>
 </body>
