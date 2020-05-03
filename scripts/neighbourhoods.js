@@ -55,11 +55,11 @@ function random3 (x, y, probability) {
                 if (random < probability[1]) {
                     continue;
                 }
-            } else if ((i == -1 && i == -1) || (i == 1 && i == 1)) {
+            } else if ((i == -1 && j == -1) || (i == 1 && j == 1)) {
                 if (random < probability[2]) {
                     continue;
                 }
-            } else if ((i == 1 && i == -1) || (i == -1 && i == 1)) {
+            } else if ((i == 1 && j == -1) || (i == -1 && j == 1)) {
                 if (random < probability[3]) {
                     continue;
                 }
