@@ -17,52 +17,82 @@ for (let i = 0; i < width; i++) {
     }
 }
 
-function moore (x, y) {
-    for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-            if (i == 0 && j == 0) continue;
-            if (x + i < 0 || x + i > width -1 || y + j < 0 || y + j > height - 1) continue;
-            if (matrix[x + i][y + j].oldState) {
-                drawPixel(x, y, 0, 0, 0, 255);
-                return 1;
+var next = function (neighbourhood, iteration, random, probability) {
+    for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+            if (random == 1) {
+                if (Math.random() < probability) {
+                    continue;
+                }
+            }
+            switch (neighbourhood) {
+                case 1:
+                    matrix[i][j].state = moore(i, j);
+                    break;
+                case 2:
+                    matrix[i][j].state = neumann(i, j);
+                    break;
+                case 3:
+                    matrix[i][j].state = (j % 2 ? moore(i, j) : neumann(i, j));
+                    break;
+                case 4:
+                    matrix[i][j].state = (j % 4 ? neumann(i, j) : moore(i, j));
+                    break;
+                case 5:
+                    matrix[i][j].state = (j % 4 ? moore(i, j) : neumann(i, j));
+                    break;
+                case 6:
+                    matrix[i][j].state = (iteration % 2 ? moore(i, j) : neumann(i, j));
+                    break;
+                case 7:
+                    matrix[i][j].state = (iteration % 4 ? neumann(i, j) : moore(i, j));
+                    break;
+                case 8:
+                    matrix[i][j].state = (iteration % 4 ? moore(i, j) : neumann(i, j));
+                    break;
+                case 9:
+                    matrix[i][j].state = rectangular(i, j, iteration);
+                    break;
             }
         }
     }
-    return 0;
+    saveOldStates();
 }
 
-function neumann (x, y) {
-    for (let i = -1; i <= 1; i++) {
-        if (i == 0) continue;
-        if (x + i < 0 || x + i > width - 1) continue;
-        if (y + i < 0 || y + i > height - 1) continue;
-        if (matrix[x + i][y].oldState || matrix[x][y + i].oldState) {
-            drawPixel(x, y, 0, 0, 0, 255);
-            return 1;
-        }
-    }
-    return 0;
-}
-
-var next = function (neighbourhood) {
+var nextRandom2 = function(probability) {
     for (let i = 0; i < width; i++) {
         for (let j = 0; j < height; j++) {
-            matrix[i][j].state = neighbourhood == 'moore' ? moore(i, j) : neumann(i, j);
+            if (Math.random() < probability) {
+                matrix[i][j].state = moore(i, j);
+            } else {
+                matrix[i][j].state = neumann(i, j);
+            }
         }
     }
-    for (let i = 0; i < width; i++) {
-        for (let j = 0; j < height; j++) {
-            matrix[i][j].oldState = matrix[i][j].state;
-        }
-    }
+    saveOldStates();
 }
 
-var frame = function (neighbourhood, y) {
-    next(neighbourhood);
+var nextRandom3 = function(probability) {
+    for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+            matrix[i][j].state = random3(i, j, probability);
+        }
+    }
+    saveOldStates();
+}
+
+var frame = function (neighbourhood, y, random, probability) {
+    if (random == 0 || random == 1) {
+        next(neighbourhood, y, random, probability);
+    } else if (random == 2) {
+        nextRandom2(probability);
+    } else if (random == 3) {
+        nextRandom3(probability);
+    }
     updateCanvas();
     if  (y < 100) {
         window.requestAnimationFrame(() => { 
-            frame(neighbourhood, y + 1);
+            frame(neighbourhood, y + 1, random, probability);
         });
     }
 }
@@ -70,14 +100,32 @@ var frame = function (neighbourhood, y) {
 var start = function () {
     updateCanvas();
     $('#error-message').addClass('d-none');
-    var neighbourhood = $("input[name='neighbourhood']:checked").val();
-    if (!neighbourhood) {
-        $('#error-message').removeClass('d-none');
-        return;
-    };
+    var neighbourhood = $('#neighbourhood option:selected').val();
+    var random = $('#random option:selected').val();
+    var probability = 0;
+    if (+random == 1) {
+        probability = +$('#random1-probability').val() || 0;
+    } else if (+random == 2) {
+        probability = +$('#random2-probability').val() || 0;
+    } else if (+random == 3) {
+        let probabilityVertical = +$('#vertical-probability').val() || 0;
+        let probabilityHorizontal = +$('#horizontal-probability').val() || 0;
+        let probabilityDiagonal1 = +$('#diagonal1-probability').val() || 0;
+        let probabilityDiagonal2 = +$('#diagonal2-probability').val() || 0;
+
+        probability = [probabilityVertical, probabilityHorizontal, probabilityDiagonal1, probabilityDiagonal2];
+    }
     window.requestAnimationFrame(() => { 
-        frame(neighbourhood, 1);
+        frame(+neighbourhood, 1, random, probability);
     });
+}
+
+var saveOldStates = function() {
+    for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+            matrix[i][j].oldState = matrix[i][j].state;
+        }
+    }
 }
 
 var clearCanvas = function () {
@@ -107,3 +155,19 @@ function drawPixel (x, y, r, g, b, a) {
 function updateCanvas () {
     context.putImageData(canvasData, 0, 0);
 }
+
+$("#random").change(function() {
+    $('#neighbourhood').removeAttr('disabled');
+    $('#random1-container').addClass('d-none');
+    $('#random2-container').addClass('d-none');
+    $('#random3-container').addClass('d-none');
+    if (+$('#random option:selected').val() == 1) {
+        $('#random1-container').removeClass('d-none');
+    } else if (+$('#random option:selected').val() == 2) {
+        $('#random2-container').removeClass('d-none');
+        $('#neighbourhood').attr('disabled', true);
+    } else if (+$('#random option:selected').val() == 3) {
+        $('#random3-container').removeClass('d-none');
+        $('#neighbourhood').attr('disabled', true);
+    } 
+});
