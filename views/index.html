@@ -23,60 +23,7 @@
 
             <div class="col">
                 <div class="inputs-container p-3">
-                    <div class="pb-3">
-                        Typ otoczenia:
-                        <select id="neighbourhood" class="form-control mt-1">
-                            <option value="1">Moore'a</option>
-                            <option value="2">Neumanna</option>
-                            <option value="3">Heksagonalne</option>
-                            <option value="4">Pentagonalne</option>
-                            <option value="5">Heptagonalne</option>
-                            <option value="6">Pseudo-heksagonalne</option>
-                            <option value="7">Pseudo-pentagonalne</option>
-                            <option value="8">Pseudo-heptagonalne</option>
-                            <option value="9">Prostokątne</option>
-                        </select>
-                    </div>
-                    <div class="pb-3">
-                        Typ zmiennej losowej:
-                        <select id="random" class="form-control mt-1">
-                            <option value="0">-- Brak --</option>
-                            <option value="1">1 - Losowe sprawdzenie lub nie sąsiedztwa dla każdej komórki</option>
-                            <option value="2">2 - Sprawdzanie losowego typu otoczenia dla każdej komórki</option>
-                            <option value="3">3 - Losowy wybór każdego z możliwych sąsiadów</option>
-                        </select>
-                        <div id="random1-container" class="pt-3 d-none">
-                            <label for="random1-probability">Prawdopodobieństwo opuszczenia komórki:</label>
-                            <input type="number" min="0" max="1" step="0.1" class="form-control" id="random1-probability"/>
-                        </div>
-                        <div id="random2-container" class="pt-3 d-none">
-                            <label for="random2-probability">Prawdopodobieństwo otoczenia Moore'a:</label>
-                            <input type="number" min="0" max="1" step="0.1" class="form-control" id="random2-probability"/>
-                        </div>
-                        <div id="random3-container" class="pt-3 d-none">
-                            Prawdopodobieństwa opuszczenia sąsiadów w kierunku:
-                            <div class="row">
-                                <div class="col"> 
-                                    <label for="vertical-probability">Pionowym:</label>
-                                    <input type="number" min="0" max="1" step="0.1" class="form-control" id="vertical-probability"/>
-                                </div>
-                                <div class="col"> 
-                                    <label for="horizontal-probability">Poziomym:</label>
-                                    <input type="number" min="0" max="1" step="0.1" class="form-control" id="horizontal-probability"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col"> 
-                                    <label for="diagonal1-probability">Po 1. przekątnej</label>
-                                    <input type="number" min="0" max="1" step="0.1" class="form-control" id="diagonal1-probability"/>
-                                </div>
-                                <div class="col"> 
-                                    <label for="diagonal2-probability">Po 2. przekątnej</label>
-                                    <input type="number" min="0" max="1" step="0.1" class="form-control" id="diagonal2-probability"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <span id="simulation-time"></span>
                 </div>
                 <div class="text-center">   
                     <button onclick="start()">START</button>
@@ -87,6 +34,5 @@
 
     </div>
     <script src="../scripts/main.js"></script>
-    <script src="../scripts/neighbourhoods.js"></script>
 </body>
 </html>
