@@ -8,7 +8,7 @@ var matrix;
 var ncells;
 var icells;
 var grains = [{
-    center: [200, 200],
+    center: [width/2, height/2],
     cells: [[200, 200]]
 }];
 
