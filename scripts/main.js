@@ -11,6 +11,7 @@ var grains = [{
     center: [width/2, height/2],
     cells: [[200, 200]]
 }];
+var transitionCells = [];
 
 var startTime;
 var endTime;
@@ -43,20 +44,25 @@ var next = function (y) {
                 matrix[i][j].state = 1;
                 matrix[i][j].grain = 1;
                 matrix[i][j].time = grainGrowthRate(i, j, grains[0].center[0], grains[0].center[1], moore(i, j)[0], moore(i, j)[1]);
+                transitionCells.push({
+                    x:    i,
+                    y:    j,
+                    cell: matrix[i][j]
+                });
             }
         }
     }
-    for (let i = 0; i < width; i++) {
-        for (let j = 0; j < height; j++) {
-            if (matrix[i][j].state == 1) {
-                if (matrix[i][j].time <= y) {
-                    icells++;
-                    matrix[i][j].state = 2;
-                    drawPixel(i, j, 0, 0, 0, 255);
-                }
-            }
+    let trLength = transitionCells.length;
+    for (let i = 0; i < trLength; i++) {
+        if (transitionCells[i].cell.time <= y) {
+            icells++;
+            matrix[transitionCells[i].x][transitionCells[i].y].state = 2;
+            drawPixel(transitionCells[i].x, transitionCells[i].y, 0, 0, 0, 255);
+        } else {
+            transitionCells.push(transitionCells[i]);
         }
     }
+    transitionCells.splice(0, trLength);
 }
 
 var frame = function (y) {
@@ -91,7 +97,9 @@ var initMatrix = function() {
             matrix[i][j] = {
                 state: isMiddle ? 2 : 0,
                 grainNumber: isMiddle ? 1 : 0,
-                time: 0
+                time: 0, 
+                prevCell: 0,
+                nextCell: 0
             }
         }
     }
