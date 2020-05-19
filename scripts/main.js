@@ -5,22 +5,22 @@ var context = canvas.getContext("2d");
 var canvasData = context.createImageData(width, height);
 
 var matrix;
+var grains;
 var ncells;
 var icells;
-var grains = [{
-    center: [width/2, height/2],
-    cells: [[200, 200]]
-}];
-var transitionCells = [];
 
-var startTime;
-var endTime;
-
-var grainGrowthRate = function(ic, jc, ig, jg, inx, jnx) {
-    var lc = Math.sqrt(Math.pow((ic - ig), 2) + Math.pow((jc - jg), 2));
-    var ln = Math.sqrt(Math.pow((inx - ig), 2) + Math.pow((jnx - jg), 2));
-    var time = lc - ln;
-    return (+matrix[inx][jnx].time + (1.1 * time));
+function neumann (x, y) {
+    for (let i = -1; i <= 1; i++) {
+        if (i == 0) continue;
+        if (x + i < 0 || x + i > width - 1) continue;
+        if (y + i < 0 || y + i > height - 1) continue;
+        if (matrix[x + i][y].state == 2) {
+            return [x + i, y];
+        } else if (matrix[x][y + i].state == 2) {
+            return [x, y + i];
+        }
+    }
+    return false;
 }
 
 function moore (x, y) {
@@ -36,70 +36,100 @@ function moore (x, y) {
     return false;
 }
 
-var next = function (y) {
+var next = function (neighbourhood, y) {
     for (let i = 0; i < width; i++) {
         for (let j = 0; j < height; j++) {
-            if (!matrix[i][j].state && moore(i, j)) {
-                grains[0].cells.push([i, j]);
+            let neighbours = (neighbourhood ? neumann(i, j) : moore(i, j));
+            if (!matrix[i][j].state && neighbours) {
+                matrix[i][j].grain = matrix[neighbours[0]][neighbours[1]].grain;
                 matrix[i][j].state = 1;
-                matrix[i][j].grain = 1;
-                matrix[i][j].time = grainGrowthRate(i, j, grains[0].center[0], grains[0].center[1], moore(i, j)[0], moore(i, j)[1]);
-                transitionCells.push({
-                    x:    i,
-                    y:    j,
-                    cell: matrix[i][j]
-                });
             }
         }
     }
-    let trLength = transitionCells.length;
-    for (let i = 0; i < trLength; i++) {
-        if (transitionCells[i].cell.time <= y) {
-            icells++;
-            matrix[transitionCells[i].x][transitionCells[i].y].state = 2;
-            drawPixel(transitionCells[i].x, transitionCells[i].y, 0, 0, 0, 255);
-        } else {
-            transitionCells.push(transitionCells[i]);
+    for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+            if (matrix[i][j].state == 1) {
+                icells++;
+                matrix[i][j].state = 2;
+                drawPixel(i, j, grains[matrix[i][j].grain].color[0], grains[matrix[i][j].grain].color[1], grains[matrix[i][j].grain].color[2], 255);
+            }
         }
     }
-    transitionCells.splice(0, trLength);
 }
 
-var frame = function (y) {
-    next(y);
+var frame = function (neighbourhood, y) {
+    next(neighbourhood, y);
     updateCanvas();
-    if  (icells < ncells) {
+    if  (icells < ncells - 4) {
         window.requestAnimationFrame(() => { 
-            frame(y + 1);
+            frame(neighbourhood, y + 1);
         });
-    } else {
-        endTime = performance.now();
-        $('#simulation-time').text('Obliczenia trwały ' + Math.round(((endTime - startTime) + Number.EPSILON) * 100) / 100  + ' ms');
     }
 }
 
 var start = function () {
-    startTime = performance.now();
-    initMatrix();
-    updateCanvas();
-    window.requestAnimationFrame(() => { 
-        frame(1);
+    if (!grains.length) {
+        $('#start-error').text('Przed rozpoczęciem symulacji dodaj zarodki ziaren.');
+    } else {
+        disableInputs();
+        var neighbourhood = +$('#neighbourhood option:selected').val();
+        window.requestAnimationFrame(() => { 
+            frame(neighbourhood, 1);
+        });
+        $('#start-error').text('');
+    }
+}
+
+function addNucleon (xIndex, yIndex, size, shape) {
+    var pixelColor = getRandomColor();
+    grains.push({
+        center: [xIndex, yIndex],
+        cells : [[xIndex, yIndex]],
+        color : pixelColor
     });
+
+    var leftIncrease = Math.floor(size / 2);
+    var righIncrease = size % 2 == 0 ? leftIncrease-1 : leftIncrease;
+    if (shape == 0) shape = Math.round((Math.random() * 1) + 1);
+
+    if (shape == 1 && size > 1) {
+        var r = leftIncrease;
+        for (var i = -r; i <= r; i++) {
+            for (var j = -r; j <= r; j++) {
+                if (xIndex + i < width && xIndex + i >= 0 && yIndex + j < height && yIndex + j >= 0) {
+                    var d = (i / r) * (i / r) + (j / r) * (j / r); 
+                    if (d < 1.08) {
+                        icells++;
+                        matrix[xIndex + i][yIndex + j].state = 2;
+                        matrix[xIndex + i][yIndex + j].grain = grains.length - 1;
+                        drawPixel(xIndex + i, yIndex + j, pixelColor[0], pixelColor[1], pixelColor[2], 255);
+                    }
+                }
+            }
+        }
+    } else if (shape == 2 || size == 1) {
+        for (var i = -leftIncrease; i <= righIncrease; i++) {
+            for (var j = -leftIncrease; j <= righIncrease; j++) {
+                if (xIndex + i < width && xIndex + i >= 0 && yIndex + j < height && yIndex + j >= 0) {
+                    icells++;
+                    matrix[xIndex + i][yIndex + j].state = 2;
+                    matrix[xIndex + i][yIndex + j].grain = grains.length - 1;
+                    drawPixel(xIndex + i, yIndex + j, pixelColor[0], pixelColor[1], pixelColor[2], 255);
+                }
+            }
+        }
+    }
 }
 
 var initMatrix = function() {
     matrix = new Array(width);
+    grains = [];
     for (let i = 0; i < width; i++) {
         matrix[i] = new Array(height);
         for (let j = 0; j < height; j++) {
-            isMiddle = (i == Math.floor(width/2) && j == Math.floor(height/2));
-            drawPixel(i, j, isMiddle ? 0 : 255, isMiddle ? 0 : 255, isMiddle ? 0 : 255, 255)
             matrix[i][j] = {
-                state: isMiddle ? 2 : 0,
-                grainNumber: isMiddle ? 1 : 0,
-                time: 0, 
-                prevCell: 0,
-                nextCell: 0
+                grain: 0,
+                state: 0
             }
         }
     }
@@ -108,8 +138,10 @@ var initMatrix = function() {
 }
 
 var clearCanvas = function () {
+    initMatrix();
+    enableInputs();
     context.clearRect(0, 0, width, height);
-    $('#simulation-time').text('');
+    canvasData = context.createImageData(width, height);
 }
 
 function drawPixel (x, y, r, g, b, a) {
@@ -124,3 +156,5 @@ function drawPixel (x, y, r, g, b, a) {
 function updateCanvas () {
     context.putImageData(canvasData, 0, 0);
 }
+
+initMatrix();

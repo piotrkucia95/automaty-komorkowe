@@ -17,22 +17,59 @@
 
             <div class="col canvas-column">
                 <div class="canvas-container w-100 p-4">
-                    <canvas id="main-canvas" width="801" height="801"></canvas>
+                    <canvas id="main-canvas" width="401" height="401"></canvas>
                 </div>
             </div>
 
             <div class="col">
                 <div class="inputs-container p-3">
-                    <span id="simulation-time"></span>
+                    <div class="form-group w-100 text-right">
+                        <div class="neighborhood-type-container pt-2 text-left">
+                            <label for="neighbourhood">Typ otoczenia:</label>
+                            <select class="form-control" id="neighbourhood">
+                                <option value="0">Moore'a</option>
+                                <option value="1">Von Neumanna</option>
+                              </select>
+                        </div>
+                        <div class="radio-container text-left pt-2">
+                            <div class="radio">
+                                <label><input type="radio" name="optradio" value="manual">Dodaj zarodki ręcznie</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="optradio" value="random">Dodaj zarodki losowo</label>
+                            </div>
+                        </div>
+                        <div class="grains-size-container text-left pt-2">
+                            <label for="grains-size">Rozmiar zarodków:</label>
+                            <input type="number" id="grains-size" class="w-100"/>
+                            <div class="text-left text-danger pb-1" id="size-error"></div>
+                        </div>
+                        <div class="grains-shape-container text-left pt-2">
+                            <label for="grains-shape">Kształt zarodków:</label>
+                            <select class="form-control" id="grains-shape">
+                                <option value="0">losowo</option>
+                                <option value="1">&#9679 - okrągły</option>
+                                <option value="2">&#9632 - kwadratowy</option>
+                              </select>
+                        </div>
+                        <div class="grains-number-container text-left pt-2 pb-2">
+                            <label for="grains-number">Ilość zarodków:</label>
+                            <input type="number" id="grains-number" class="w-100" disabled/>
+                            <div class="text-left text-danger pb-t" id="grains-error"></div>
+                        </div>
+                        <button type="button" id="grains-button" onclick="spreadNucleonsRandomly();" disabled>Dodaj zarodki</button> 
+                    </div>
                 </div>
-                <div class="text-center">   
+                <div class="text-center"> 
                     <button onclick="start()">START</button>
                     <button onclick="clearCanvas()">WYCZYŚĆ</button>
+                    <div class="text-danger pt-2" id="start-error"></div>
                 </div>
             </div>
         </div>
 
     </div>
     <script src="../scripts/main.js"></script>
+    <script src="../scripts/helper.js"></script>
 </body>
 </html>
